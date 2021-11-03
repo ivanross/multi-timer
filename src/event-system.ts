@@ -26,8 +26,8 @@ export default class EventSystem<Events extends Record<string, any>> {
 
   clone(): EventSystem<Events> {
     const evSys = new EventSystem<Events>()
-    for (const [event, listeners] of Object.entries(this.listeners)) {
-      evSys.listeners[event] = listeners?.slice()
+    for (const event of Object.keys(this.listeners)) {
+      evSys.listeners[event] = this.listeners[event]?.slice()
     }
     return evSys
   }

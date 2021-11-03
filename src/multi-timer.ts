@@ -130,7 +130,10 @@ export function multiTimer<Info extends object = {}>() {
     return timer
   }
 
-  const pushStep = (step: Step<Info>) => (_steps.push(step), timer)
+  const pushStep = (step: Step<Info>) => {
+    _steps.push(step)
+    return timer
+  }
 
   function handleTick() {
     if (_shouldCancelFrame) {
