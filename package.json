@@ -28,6 +28,13 @@
   },
   "name": "multi-timer",
   "author": "Ivan Rossi",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ivanross/multi-timer.git"
+  },  
+  "publishConfig":{
+    "registry": "https://registry.npmjs.org"
+  },
   "module": "dist/multi-timer.esm.js",
   "size-limit": [
     {
