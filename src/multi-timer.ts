@@ -60,6 +60,12 @@ export interface Timer<Info extends object> {
   /** Return the current running step */
   activeStep(): Step<Info>
 
+  /** Elapsed time for current step */
+  elapsed(): number
+
+  /** Elapes time from the first step */
+  totalElapsed(): number
+
   /** Return the state of the timer */
   state(): TimerState
 
@@ -68,6 +74,9 @@ export interface Timer<Info extends object> {
 
   /** Pause the timer */
   pause(): void
+
+  /** Reset timer to initial progress */
+  rewind(): void
 
   /** Add event listener */
   on<E extends EventName<TimerEventsMap<Info>>>(event: E, listener: TimerListener<Info, E>): void
@@ -212,14 +221,24 @@ export function multiTimer<Info extends object = {}>() {
     _shouldCancelFrame = true
   }
 
+  const rewind = () => {
+    _currStepElapsed = 0
+    _prevStepElapsed = 0
+    _stepIndex = 0
+    _startTime = Date.now()
+  }
+
   Object.assign<Timer<Info>, Timer<Info>>(timer, {
     activeStep,
     pushStep,
     steps,
     start,
     pause,
+    rewind,
     tickRate,
     tickDuration,
+    elapsed: () => event().elapsed,
+    totalElapsed: () => event().totalElapsed,
     state: () => _state,
     on: bind(ev.subscribe, ev),
     off: bind(ev.unsubscribe, ev),

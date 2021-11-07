@@ -96,4 +96,24 @@ describe(multiTimer, () => {
     timer.start()
     await sleep(2000)
   })
+
+  it('should reset progres on rewind', async () => {
+    const timer = multiTimer<{ id: string }>()
+      .tickDuration(10)
+      .pushStep({ id: '1', duration: 200 })
+      .pushStep({ id: '2', duration: 200 })
+      .pushStep({ id: '3', duration: 200 })
+
+    timer.start()
+
+    await sleep(300)
+
+    timer.pause()
+    expect(timer.activeStep().id).toEqual('2')
+    expect(timer.totalElapsed()).toBeGreaterThan(0)
+
+    timer.rewind()
+    expect(timer.activeStep().id).toEqual('1')
+    expect(timer.totalElapsed()).toEqual(0)
+  })
 })
