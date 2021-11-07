@@ -104,6 +104,8 @@ describe(multiTimer, () => {
       .pushStep({ id: '2', duration: 200 })
       .pushStep({ id: '3', duration: 200 })
 
+    const fn = jest.fn()
+    timer.on('rewind', fn)
     timer.start()
 
     await sleep(300)
@@ -111,9 +113,11 @@ describe(multiTimer, () => {
     timer.pause()
     expect(timer.activeStep().id).toEqual('2')
     expect(timer.totalElapsed()).toBeGreaterThan(0)
+    expect(fn).toBeCalledTimes(0)
 
     timer.rewind()
     expect(timer.activeStep().id).toEqual('1')
     expect(timer.totalElapsed()).toEqual(0)
+    expect(fn).toBeCalledTimes(1)
   })
 })

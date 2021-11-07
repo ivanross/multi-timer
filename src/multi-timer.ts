@@ -32,6 +32,7 @@ export interface TimerEvent<Info extends object> {
 export interface TimerEventsMap<Info extends object> {
   start: TimerEvent<Info>
   pause: TimerEvent<Info>
+  rewind: TimerEvent<Info>
   end: TimerEvent<Info>
 
   tick: TimerEvent<Info>
@@ -226,6 +227,8 @@ export function multiTimer<Info extends object = {}>() {
     _prevStepElapsed = 0
     _stepIndex = 0
     _startTime = Date.now()
+
+    ev.dispatch('rewind', event())
   }
 
   Object.assign<Timer<Info>, Timer<Info>>(timer, {
