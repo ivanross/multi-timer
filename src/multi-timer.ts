@@ -4,9 +4,12 @@ import { bind } from './uilts'
 export type Step<Info> = Info & { duration: number }
 export type TimerState = 'playing' | 'stopped' | 'paused'
 
-export type TimerListener<Event extends EventName<TimerEventsMap>> = Listener<TimerEventsMap[Event]>
+export type TimerListener<
+  Info extends object,
+  Event extends EventName<TimerEventsMap<Info>>
+> = Listener<TimerEventsMap<Info>[Event]>
 
-export interface TimerEvent<Info extends object = {}> {
+export interface TimerEvent<Info extends object> {
   /** Referece to the timer */
   timer: Timer<Info>
 
@@ -26,7 +29,7 @@ export interface TimerEvent<Info extends object = {}> {
   stepIndex: number
 }
 
-export interface TimerEventsMap<Info extends object = {}> {
+export interface TimerEventsMap<Info extends object> {
   start: TimerEvent<Info>
   pause: TimerEvent<Info>
   end: TimerEvent<Info>
@@ -35,7 +38,7 @@ export interface TimerEventsMap<Info extends object = {}> {
   stepchange: TimerEvent<Info>
 }
 
-export interface Timer<Info extends object = {}> {
+export interface Timer<Info extends object> {
   /** Return all steps */
   steps(): Array<Step<Info>>
   /** Set new steps */
@@ -67,17 +70,17 @@ export interface Timer<Info extends object = {}> {
   pause(): void
 
   /** Add event listener */
-  on<E extends EventName<TimerEventsMap>>(event: E, listener: TimerListener<E>): void
+  on<E extends EventName<TimerEventsMap<Info>>>(event: E, listener: TimerListener<Info, E>): void
 
   /** Remove event listener */
-  off<E extends EventName<TimerEventsMap>>(event: E, listener: TimerListener<E>): void
+  off<E extends EventName<TimerEventsMap<Info>>>(event: E, listener: TimerListener<Info, E>): void
 }
 
 const rate2duration = (r: number) => 1000 / r
 const duration2rate = (d: number) => 1000 / d
 
 export function multiTimer<Info extends object = {}>() {
-  const ev = new EventSystem<TimerEventsMap>()
+  const ev = new EventSystem<TimerEventsMap<Info>>()
 
   let _steps: Array<Step<Info>> = []
   let _stepIndex = 0
