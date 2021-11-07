@@ -76,4 +76,24 @@ describe(multiTimer, () => {
     timer.pause()
     expect(fn).toBeCalledTimes(2)
   })
+
+  it('should always increment totalElapsed value', async () => {
+    const timer = multiTimer()
+      .tickDuration(10)
+      .pushStep({ duration: 500 })
+      .pushStep({ duration: 500 })
+      .pushStep({ duration: 500 })
+
+    let prevTotalElapsed = 0
+
+    timer.on('tick', e => {
+      const totalElapsed = e.totalElapsed
+      const delta = totalElapsed - prevTotalElapsed
+      prevTotalElapsed = totalElapsed
+      expect(delta).toBeGreaterThanOrEqual(0)
+    })
+
+    timer.start()
+    await sleep(2000)
+  })
 })

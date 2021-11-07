@@ -97,8 +97,8 @@ export function multiTimer<Info extends object = {}>() {
   const timer = {} as Timer<Info>
 
   const activeStep = () => _steps[_stepIndex]
-  const updatePrevElapsed = () =>
-    (_prevStepElapsed = _steps.slice(0, _stepIndex).reduce((acc, s) => acc + s.duration, 0))
+  const computePrevElapsed = () =>
+    _steps.slice(0, _stepIndex).reduce((acc, s) => acc + s.duration, 0)
 
   const event: () => TimerEvent<Info> = () => ({
     timer,
@@ -175,15 +175,15 @@ export function multiTimer<Info extends object = {}>() {
   // Update state when step changes
   function handleStepChange() {
     _stepIndex++
-    _prevStepElapsed = updatePrevElapsed()
-    _currStepElapsed -= _prevStepElapsed
+    _prevStepElapsed = computePrevElapsed()
+    _currStepElapsed -= _steps[_stepIndex - 1].duration
     _startTime = Date.now() - _currStepElapsed
   }
 
   // Update state when timer ends all steps
   function handleEnd() {
     _state = 'stopped'
-    _prevStepElapsed = updatePrevElapsed()
+    _prevStepElapsed = computePrevElapsed()
     _currStepElapsed = _steps[_stepIndex].duration
   }
 
