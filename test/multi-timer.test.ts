@@ -114,10 +114,25 @@ describe(multiTimer, () => {
     expect(timer.activeStep().id).toEqual('2')
     expect(timer.totalElapsed()).toBeGreaterThan(0)
     expect(fn).toBeCalledTimes(0)
+    expect(timer.state()).toEqual('paused')
 
     timer.rewind()
     expect(timer.activeStep().id).toEqual('1')
     expect(timer.totalElapsed()).toEqual(0)
     expect(fn).toBeCalledTimes(1)
+    expect(timer.state()).toEqual('paused')
+
+    timer.start()
+
+    await sleep(1000)
+    expect(timer.state()).toEqual('stopped')
+    timer.rewind()
+    expect(timer.state()).toEqual('paused')
+
+    timer.start()
+    await sleep(300)
+    expect(timer.state()).toEqual('playing')
+    timer.rewind()
+    expect(timer.state()).toEqual('playing')
   })
 })

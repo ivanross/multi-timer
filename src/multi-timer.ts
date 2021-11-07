@@ -227,6 +227,7 @@ export function multiTimer<Info extends object = {}>() {
     _prevStepElapsed = 0
     _stepIndex = 0
     _startTime = Date.now()
+    _state = _state === 'stopped' ? 'paused' : _state
 
     ev.dispatch('rewind', event())
   }
