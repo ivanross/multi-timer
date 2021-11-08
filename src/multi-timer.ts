@@ -1,5 +1,5 @@
 import EventSystem, { Listener, EventName } from './event-system'
-import { bind } from './uilts'
+import { bind, workerSetTimeout } from './uilts'
 
 export type Step<Info> = Info & { duration: number }
 export type TimerState = 'playing' | 'stopped' | 'paused'
@@ -89,7 +89,7 @@ export interface Timer<Info extends object> {
 const rate2duration = (r: number) => 1000 / r
 const duration2rate = (d: number) => 1000 / d
 
-export function multiTimer<Info extends object = {}>() {
+export function multiTimer<Info extends object = {}>(idleOnBlur: boolean = false) {
   const ev = new EventSystem<TimerEventsMap<Info>>()
 
   let _steps: Array<Step<Info>> = []
@@ -154,6 +154,7 @@ export function multiTimer<Info extends object = {}>() {
       return
     }
 
+
     _currStepElapsed = Date.now() - _startTime
 
     const step = activeStep()
@@ -178,7 +179,9 @@ export function multiTimer<Info extends object = {}>() {
 
     if (!isTimerEnded) {
       const nextTickDuration = Math.min(rate2duration(_tickRate), missingTime)
-      setTimeout(handleTick, nextTickDuration)
+      const useWorker = !idleOnBlur && globalThis.document?.visibilityState !== 'visible'
+      const _setTimeout = useWorker ? workerSetTimeout : setTimeout
+      _setTimeout(handleTick, nextTickDuration)
     }
   }
 
