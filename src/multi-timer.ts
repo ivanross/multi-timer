@@ -1,5 +1,5 @@
 import EventSystem, { Listener, EventName } from './event-system'
-import { bind, workerSetTimeout } from './uilts'
+import { bind, workerSetTimeout } from './utils'
 
 export type Step<Info> = Info & { duration: number }
 export type TimerState = 'playing' | 'stopped' | 'paused'

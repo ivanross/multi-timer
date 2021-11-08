@@ -1,5 +1,5 @@
 import EventSystem from '../src/event-system'
-import { bind } from '../src/uilts'
+import { bind } from '../src/utils'
 
 describe(EventSystem, () => {
   it('should not invoke subscribed listener before dispatch', () => {
