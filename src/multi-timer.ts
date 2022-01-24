@@ -211,8 +211,9 @@ export function multiTimer<Info extends object = {}>() {
   }
 
   const pause = () => {
-    if (_state === 'paused') {
-      __DEV__ && console.warn('Trying to pause a MultiTimer that is already paused, skipping.')
+    if (_state === 'paused' || _state === 'stopped') {
+      __DEV__ &&
+        console.warn('Trying to pause a MultiTimer that is already paused or stopped, skipping.')
       return
     }
 

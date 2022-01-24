@@ -132,7 +132,9 @@ describe(multiTimer, () => {
     timer.start()
     await sleep(300)
     expect(timer.state()).toEqual('playing')
+    expect(timer.elapsed()).toBeGreaterThan(0)
     timer.rewind()
+
     expect(timer.state()).toEqual('playing')
   })
 })
